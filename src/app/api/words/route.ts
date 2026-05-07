@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { lookupWord } from "@/lib/dictionary";
+import { lookupWord, extractDefinitionSummary } from "@/lib/dictionary";
+import { generateAndStoreExamples } from "@/lib/examples";
 
 function extractDomain(url: string): string {
   try {
@@ -17,8 +18,8 @@ export async function POST(req: NextRequest) {
 
   const { word, definition, partOfSpeech, phonetic, notes, sourceUrl } = await req.json();
 
-  // Fetch full raw definition for storage
   const rawEntry = await lookupWord(word);
+  const resolved = rawEntry ? extractDefinitionSummary(rawEntry) : null;
 
   const { data, error } = await supabase
     .from("words")
@@ -26,8 +27,8 @@ export async function POST(req: NextRequest) {
       user_id: user.id,
       word: word.toLowerCase().trim(),
       definition: rawEntry ?? { manual: definition },
-      part_of_speech: partOfSpeech,
-      phonetic,
+      part_of_speech: partOfSpeech || resolved?.partOfSpeech || "",
+      phonetic: phonetic || resolved?.phonetic || "",
       notes,
       source_url: sourceUrl || null,
       source_domain: sourceUrl ? extractDomain(sourceUrl) : null,
@@ -36,5 +37,13 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  // Generate dialogue examples after the response is sent
+  after(async () => {
+    const def = resolved?.definition || definition || "";
+    const pos = partOfSpeech || resolved?.partOfSpeech || "";
+    await generateAndStoreExamples(data.id, word.toLowerCase().trim(), def, pos);
+  });
+
   return NextResponse.json({ id: data.id });
 }
