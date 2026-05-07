@@ -1,0 +1,185 @@
+"use client";
+
+import { useState, useMemo } from "react";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
+
+type Word = {
+  id: string;
+  word: string;
+  part_of_speech: string;
+  phonetic: string;
+  status: "saved" | "practicing" | "working";
+  notes: string;
+  source_url: string;
+  source_domain: string;
+  created_at: string;
+};
+
+type SortKey = "created_at" | "word" | "status";
+
+const STATUS_ORDER = { saved: 0, practicing: 1, working: 2 };
+const STATUS_LABELS: Record<string, string> = {
+  saved: "Saved",
+  practicing: "Practicing",
+  working: "Working vocab",
+};
+const STATUS_COLORS: Record<string, string> = {
+  saved: "bg-gray-100 text-gray-600",
+  practicing: "bg-blue-100 text-blue-700",
+  working: "bg-green-100 text-green-700",
+};
+
+export default function WordList({ initialWords }: { initialWords: Word[] }) {
+  const [words, setWords] = useState<Word[]>(initialWords);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [sortKey, setSortKey] = useState<SortKey>("created_at");
+  const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const supabase = createClient();
+
+  const filtered = useMemo(() => {
+    let result = words;
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter((w) => w.word.toLowerCase().includes(q));
+    }
+    if (filterStatus !== "all") {
+      result = result.filter((w) => w.status === filterStatus);
+    }
+    result = [...result].sort((a, b) => {
+      let cmp = 0;
+      if (sortKey === "word") cmp = a.word.localeCompare(b.word);
+      else if (sortKey === "status") cmp = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+      else cmp = new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      return sortDir === "asc" ? cmp : -cmp;
+    });
+    return result;
+  }, [words, search, filterStatus, sortKey, sortDir]);
+
+  function toggleSort(key: SortKey) {
+    if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+    else { setSortKey(key); setSortDir("asc"); }
+  }
+
+  async function archive(id: string) {
+    await supabase.from("words").update({ archived: true }).eq("id", id);
+    setWords((prev) => prev.filter((w) => w.id !== id));
+  }
+
+  const SortIcon = ({ k }: { k: SortKey }) =>
+    sortKey === k ? (sortDir === "asc" ? " ↑" : " ↓") : "";
+
+  return (
+    <div>
+      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+        <input
+          type="text"
+          placeholder="Search words…"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="all">All statuses</option>
+          <option value="saved">Saved</option>
+          <option value="practicing">Practicing</option>
+          <option value="working">Working vocab</option>
+        </select>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="text-center py-20 text-gray-400">
+          <p className="text-lg mb-2">No words yet</p>
+          <p className="text-sm">
+            <Link href="/add" className="text-indigo-600 hover:underline">
+              Add your first word
+            </Link>
+          </p>
+        </div>
+      ) : (
+        <div className="border border-gray-200 rounded-xl overflow-hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-gray-50 text-gray-500">
+              <tr>
+                <th
+                  className="text-left px-4 py-3 font-medium cursor-pointer hover:text-gray-900"
+                  onClick={() => toggleSort("word")}
+                >
+                  Word<SortIcon k="word" />
+                </th>
+                <th className="text-left px-4 py-3 font-medium hidden sm:table-cell">Part of speech</th>
+                <th
+                  className="text-left px-4 py-3 font-medium cursor-pointer hover:text-gray-900"
+                  onClick={() => toggleSort("status")}
+                >
+                  Status<SortIcon k="status" />
+                </th>
+                <th
+                  className="text-left px-4 py-3 font-medium cursor-pointer hover:text-gray-900 hidden md:table-cell"
+                  onClick={() => toggleSort("created_at")}
+                >
+                  Added<SortIcon k="created_at" />
+                </th>
+                <th className="px-4 py-3" />
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filtered.map((word) => (
+                <tr key={word.id} className="hover:bg-gray-50 group">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/words/${word.id}`}
+                        className="font-medium text-gray-900 hover:text-indigo-600"
+                      >
+                        {word.word}
+                      </Link>
+                      {word.source_url && (
+                        <a
+                          href={word.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title={`Source: ${word.source_domain}`}
+                          className="text-gray-300 hover:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          ↗
+                        </a>
+                      )}
+                    </div>
+                    {word.phonetic && (
+                      <p className="text-xs text-gray-400 mt-0.5">{word.phonetic}</p>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">
+                    {word.part_of_speech}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[word.status]}`}>
+                      {STATUS_LABELS[word.status]}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-gray-400 hidden md:table-cell">
+                    {new Date(word.created_at).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => archive(word.id)}
+                      className="text-gray-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                    >
+                      Archive
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,36 @@
+export interface DictionaryEntry {
+  word: string;
+  phonetic?: string;
+  meanings: {
+    partOfSpeech: string;
+    definitions: { definition: string; example?: string }[];
+    synonyms: string[];
+  }[];
+}
+
+export async function lookupWord(word: string): Promise<DictionaryEntry | null> {
+  try {
+    const res = await fetch(
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word.trim().toLowerCase())}`
+    );
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+    return data[0] as DictionaryEntry;
+  } catch {
+    return null;
+  }
+}
+
+export function extractDefinitionSummary(entry: DictionaryEntry): {
+  phonetic: string;
+  partOfSpeech: string;
+  definition: string;
+} {
+  const firstMeaning = entry.meanings[0];
+  return {
+    phonetic: entry.phonetic ?? "",
+    partOfSpeech: firstMeaning?.partOfSpeech ?? "",
+    definition: firstMeaning?.definitions[0]?.definition ?? "",
+  };
+}
