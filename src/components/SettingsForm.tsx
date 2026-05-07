@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type Settings = {
   notification_email: string;
@@ -37,6 +37,7 @@ export default function SettingsForm({
   const [tgCode, setTgCode] = useState<string | null>(null);
   const [tgLoading, setTgLoading] = useState(false);
   const [bookmarkletCopied, setBookmarkletCopied] = useState(false);
+  const bookmarkletRef = useRef<HTMLAnchorElement>(null);
 
   const botName = "WorkingVocabBot";
 
@@ -82,6 +83,11 @@ export default function SettingsForm({
   }
 
   const bookmarkletCode = `javascript:(function(){var w=window.getSelection().toString().trim();if(!w)return alert('Highlight a word first');window.open('${appUrl}/add?word='+encodeURIComponent(w)+'&source='+encodeURIComponent(location.href),'_blank');})();`;
+
+  // React blocks javascript: URLs in href — set it directly on the DOM element instead
+  useEffect(() => {
+    bookmarkletRef.current?.setAttribute("href", bookmarkletCode);
+  }, [bookmarkletCode]);
 
   async function copyBookmarklet() {
     await navigator.clipboard.writeText(bookmarkletCode);
@@ -259,8 +265,7 @@ export default function SettingsForm({
         </p>
         <div className="flex items-center gap-3">
           <a
-            href={bookmarkletCode}
-            onClick={(e) => e.preventDefault()}
+            ref={bookmarkletRef}
             draggable
             className="inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg cursor-grab select-none transition-colors"
           >
