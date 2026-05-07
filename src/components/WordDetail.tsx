@@ -60,14 +60,19 @@ export default function WordDetail({
 
   async function generateExamples() {
     setGeneratingExamples(true);
-    const res = await fetch("/api/examples", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ wordId: word.id }),
-    });
-    const data = await res.json();
-    if (data.examples) setExamples(data.examples);
-    setGeneratingExamples(false);
+    try {
+      const res = await fetch("/api/examples", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ wordId: word.id }),
+      });
+      const data = await res.json();
+      if (data.examples) setExamples(data.examples);
+    } catch {
+      // Silent fail — user can retry with Regenerate
+    } finally {
+      setGeneratingExamples(false);
+    }
   }
 
   async function advanceStatus() {

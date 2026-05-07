@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse, after } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { lookupWord, extractDefinitionSummary } from "@/lib/dictionary";
 import { generateAndStoreExamples } from "@/lib/examples";
@@ -38,12 +38,14 @@ export async function POST(req: NextRequest) {
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-  // Generate dialogue examples after the response is sent
-  after(async () => {
-    const def = resolved?.definition || definition || "";
-    const pos = partOfSpeech || resolved?.partOfSpeech || "";
+  // Generate examples synchronously so they're ready when the detail page loads
+  const def = resolved?.definition || definition || "";
+  const pos = partOfSpeech || resolved?.partOfSpeech || "";
+  try {
     await generateAndStoreExamples(data.id, word.toLowerCase().trim(), def, pos);
-  });
+  } catch {
+    // Non-fatal — user can regenerate manually from the detail page
+  }
 
   return NextResponse.json({ id: data.id });
 }

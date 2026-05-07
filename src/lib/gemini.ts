@@ -8,7 +8,7 @@ export async function generateDialogueExamples(
   partOfSpeech: string,
   count = 3
 ): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-lite" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
   const prompt = `Give ${count} two-line dialogue exchanges using "${word}" (${partOfSpeech}: ${definition}) naturally in conversation. Vary the context. Separate with ---. No labels, no numbering.`;
 
