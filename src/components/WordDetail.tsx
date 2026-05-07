@@ -18,10 +18,7 @@ type Word = {
   created_at: string;
 };
 
-type Example = {
-  id: string;
-  text: string;
-};
+type Example = { id: string; text: string };
 
 const STATUS_NEXT: Record<string, string> = {
   saved: "practicing",
@@ -36,9 +33,9 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_COLORS: Record<string, string> = {
-  saved: "bg-gray-100 text-gray-500",
-  practicing: "bg-blue-50 text-blue-700",
-  working: "bg-green-50 text-green-700",
+  saved: "bg-gray-800 text-gray-400",
+  practicing: "bg-indigo-950 text-indigo-400",
+  working: "bg-emerald-950 text-emerald-400",
 };
 
 export default function WordDetail({
@@ -58,9 +55,7 @@ export default function WordDetail({
   const supabase = createClient();
 
   useState(() => {
-    if (examples.length === 0) {
-      generateExamples();
-    }
+    if (examples.length === 0) generateExamples();
   });
 
   async function generateExamples() {
@@ -103,7 +98,7 @@ export default function WordDetail({
 
   return (
     <div className="max-w-2xl">
-      <Link href="/" className="text-sm text-gray-400 hover:text-gray-600 mb-8 inline-block transition-colors">
+      <Link href="/" className="text-sm text-gray-500 hover:text-gray-300 mb-8 inline-block transition-colors">
         ← All words
       </Link>
 
@@ -111,10 +106,8 @@ export default function WordDetail({
       <div className="mb-8">
         <div className="flex items-start justify-between gap-4 mb-3">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-900">{word.word}</h1>
-            {word.phonetic && (
-              <p className="text-gray-400 text-sm mt-1">{word.phonetic}</p>
-            )}
+            <h1 className="text-3xl font-semibold text-gray-100">{word.word}</h1>
+            {word.phonetic && <p className="text-gray-500 text-sm mt-1">{word.phonetic}</p>}
           </div>
           <div className="flex items-center gap-2 mt-1 shrink-0">
             <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[word.status]}`}>
@@ -124,7 +117,7 @@ export default function WordDetail({
               <button
                 onClick={advanceStatus}
                 disabled={updatingStatus}
-                className="text-xs px-2.5 py-1 border border-gray-200 rounded-full text-gray-600 hover:bg-gray-100 disabled:opacity-50 transition-colors"
+                className="text-xs px-2.5 py-1 border border-gray-700 rounded-full text-gray-400 hover:bg-gray-800 hover:text-gray-100 disabled:opacity-50 transition-colors"
               >
                 Mark as {STATUS_LABELS[STATUS_NEXT[word.status]]} →
               </button>
@@ -133,17 +126,17 @@ export default function WordDetail({
         </div>
 
         {word.part_of_speech && (
-          <p className="text-indigo-600 text-sm font-medium">{word.part_of_speech}</p>
+          <p className="text-indigo-400 text-sm font-medium">{word.part_of_speech}</p>
         )}
         {definition && (
-          <p className="text-gray-700 mt-1 leading-relaxed">{definition}</p>
+          <p className="text-gray-300 mt-1 leading-relaxed">{definition}</p>
         )}
         {word.source_url && (
           <a
             href={word.source_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-gray-600 mt-3 transition-colors"
+            className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-300 mt-3 transition-colors"
           >
             From: {word.source_domain || new URL(word.source_url).hostname} ↗
           </a>
@@ -153,11 +146,11 @@ export default function WordDetail({
       {/* Dialogue examples */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Dialogue examples</h2>
+          <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Dialogue examples</h2>
           <button
             onClick={generateExamples}
             disabled={generatingExamples}
-            className="text-xs text-gray-400 hover:text-gray-600 disabled:opacity-50 transition-colors"
+            className="text-xs text-gray-500 hover:text-gray-300 disabled:opacity-50 transition-colors"
           >
             {generatingExamples ? "Generating…" : "↺ Regenerate"}
           </button>
@@ -166,7 +159,7 @@ export default function WordDetail({
         {generatingExamples && examples.length === 0 ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-16 bg-gray-100 rounded-xl animate-pulse" />
+              <div key={i} className="h-16 bg-gray-800 rounded-xl animate-pulse" />
             ))}
           </div>
         ) : (
@@ -174,7 +167,7 @@ export default function WordDetail({
             {examples.map((ex) => (
               <div
                 key={ex.id}
-                className="bg-white border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 leading-relaxed whitespace-pre-line"
+                className="bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-sm text-gray-300 leading-relaxed whitespace-pre-line"
               >
                 {ex.text}
               </div>
@@ -185,25 +178,25 @@ export default function WordDetail({
 
       {/* Notes */}
       <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Notes</h2>
+        <h2 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Notes</h2>
         {editingNotes ? (
           <div className="space-y-2">
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               rows={3}
-              className="w-full bg-white border border-gray-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <div className="flex gap-2">
               <button
                 onClick={saveNotes}
-                className="text-sm bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors"
+                className="text-sm bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-500 transition-colors"
               >
                 Save
               </button>
               <button
                 onClick={() => { setNotes(word.notes ?? ""); setEditingNotes(false); }}
-                className="text-sm text-gray-500 hover:text-gray-700"
+                className="text-sm text-gray-500 hover:text-gray-300"
               >
                 Cancel
               </button>
@@ -212,17 +205,17 @@ export default function WordDetail({
         ) : (
           <div
             onClick={() => setEditingNotes(true)}
-            className="text-sm text-gray-600 cursor-pointer hover:text-gray-900 min-h-8 transition-colors"
+            className="text-sm text-gray-400 cursor-pointer hover:text-gray-200 min-h-8 transition-colors"
           >
-            {notes || <span className="italic text-gray-300">Click to add notes…</span>}
+            {notes || <span className="italic text-gray-600">Click to add notes…</span>}
           </div>
         )}
       </div>
 
-      <div className="border-t border-gray-100 pt-5">
+      <div className="border-t border-gray-800 pt-5">
         <button
           onClick={archiveWord}
-          className="text-sm text-gray-400 hover:text-red-500 transition-colors"
+          className="text-sm text-gray-600 hover:text-red-400 transition-colors"
         >
           Archive this word
         </button>

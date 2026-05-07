@@ -20,6 +20,10 @@ const DAY_LABELS: Record<string, string> = {
   fri: "Fri", sat: "Sat", sun: "Sun",
 };
 
+const inputClass = "bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500";
+const labelClass = "block text-sm font-medium text-gray-300 mb-1";
+const sectionHeadingClass = "text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4";
+
 export default function SettingsForm({
   initialSettings,
   appUrl,
@@ -34,7 +38,7 @@ export default function SettingsForm({
   const [tgLoading, setTgLoading] = useState(false);
   const [bookmarkletCopied, setBookmarkletCopied] = useState(false);
 
-  const botName = "WorkingVocabBot"; // update to actual bot username after creation
+  const botName = "WorkingVocabBot";
 
   function set<K extends keyof Settings>(key: K, value: Settings[K]) {
     setSettings((s) => ({ ...s, [key]: value }));
@@ -43,18 +47,12 @@ export default function SettingsForm({
 
   function toggleChannel(ch: string) {
     const current = settings.notif_channels ?? [];
-    set(
-      "notif_channels",
-      current.includes(ch) ? current.filter((c) => c !== ch) : [...current, ch]
-    );
+    set("notif_channels", current.includes(ch) ? current.filter((c) => c !== ch) : [...current, ch]);
   }
 
   function toggleDay(d: string) {
     const current = settings.notif_days ?? [];
-    set(
-      "notif_days",
-      current.includes(d) ? current.filter((x) => x !== d) : [...current, d]
-    );
+    set("notif_days", current.includes(d) ? current.filter((x) => x !== d) : [...current, d]);
   }
 
   async function save() {
@@ -96,39 +94,39 @@ export default function SettingsForm({
 
       {/* Notifications */}
       <section>
-        <h2 className="font-medium text-gray-900 mb-4">Notifications</h2>
+        <h2 className={sectionHeadingClass}>Notifications</h2>
         <div className="space-y-5">
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notification email</label>
+            <label className={labelClass}>Notification email</label>
             <input
               type="email"
               value={settings.notification_email ?? ""}
               onChange={(e) => set("notification_email", e.target.value)}
-              className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className={`w-full ${inputClass}`}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Channels</label>
-            <div className="flex gap-3">
+            <label className={labelClass}>Channels</label>
+            <div className="flex gap-4">
               {["email", "telegram"].map((ch) => (
                 <label key={ch} className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={(settings.notif_channels ?? []).includes(ch)}
                     onChange={() => toggleChannel(ch)}
-                    className="rounded border-gray-300 text-indigo-600"
+                    className="rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500"
                   />
-                  <span className="text-sm capitalize">{ch}</span>
+                  <span className="text-sm text-gray-300 capitalize">{ch}</span>
                 </label>
               ))}
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Frequency</label>
-            <div className="flex gap-3">
+            <label className={labelClass}>Frequency</label>
+            <div className="flex gap-4">
               {[
                 { value: "daily", label: "Daily" },
                 { value: "3x_week", label: "3x/week" },
@@ -141,9 +139,9 @@ export default function SettingsForm({
                     value={opt.value}
                     checked={settings.notif_frequency === opt.value}
                     onChange={() => set("notif_frequency", opt.value)}
-                    className="text-indigo-600"
+                    className="border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500"
                   />
-                  <span className="text-sm">{opt.label}</span>
+                  <span className="text-sm text-gray-300">{opt.label}</span>
                 </label>
               ))}
             </div>
@@ -151,17 +149,17 @@ export default function SettingsForm({
 
           {settings.notif_frequency !== "daily" && (
             <div>
-              <label className="block text-sm font-medium mb-2">Days</label>
+              <label className={labelClass}>Days</label>
               <div className="flex gap-2 flex-wrap">
                 {DAYS.map((d) => (
                   <button
                     key={d}
                     type="button"
                     onClick={() => toggleDay(d)}
-                    className={`px-3 py-1 rounded-full text-xs font-medium border ${
+                    className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
                       (settings.notif_days ?? []).includes(d)
                         ? "bg-indigo-600 text-white border-indigo-600"
-                        : "border-gray-300 text-gray-600 hover:border-gray-400"
+                        : "border-gray-700 text-gray-400 hover:border-gray-500 hover:text-gray-200"
                     }`}
                   >
                     {DAY_LABELS[d]}
@@ -173,21 +171,21 @@ export default function SettingsForm({
 
           <div className="flex gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Time</label>
+              <label className={labelClass}>Time</label>
               <input
                 type="time"
                 value={settings.notif_time ?? "08:00"}
                 onChange={(e) => set("notif_time", e.target.value)}
-                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className={inputClass}
               />
-              <p className="text-xs text-gray-400 mt-1">Your local time</p>
+              <p className="text-xs text-gray-500 mt-1">Your local time</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Words per message</label>
+              <label className={labelClass}>Words per message</label>
               <select
                 value={settings.notif_word_count ?? 3}
                 onChange={(e) => set("notif_word_count", Number(e.target.value))}
-                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className={inputClass}
               >
                 {[2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>{n}</option>
@@ -200,53 +198,43 @@ export default function SettingsForm({
 
       {/* Telegram */}
       <section>
-        <h2 className="font-medium text-gray-900 mb-1">Telegram</h2>
+        <h2 className={sectionHeadingClass}>Telegram</h2>
         <p className="text-sm text-gray-500 mb-4">
           Connect Telegram to receive word notifications as push messages on your phone.
         </p>
 
         {settings.telegram_chat_id ? (
           <div className="flex items-center gap-3">
-            <span className="text-sm text-green-700 bg-green-50 px-3 py-1.5 rounded-full">
+            <span className="text-sm text-emerald-400 bg-emerald-950 px-3 py-1.5 rounded-full">
               Connected
               {settings.telegram_connected_at &&
                 ` · ${new Date(settings.telegram_connected_at).toLocaleDateString()}`}
             </span>
-            <button
-              onClick={disconnectTelegram}
-              className="text-sm text-gray-400 hover:text-red-500"
-            >
+            <button onClick={disconnectTelegram} className="text-sm text-gray-500 hover:text-red-400 transition-colors">
               Disconnect
             </button>
           </div>
         ) : (
           <div className="space-y-3">
             {tgCode ? (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 space-y-2">
-                <p className="text-sm text-gray-700">
+              <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 space-y-2">
+                <p className="text-sm text-gray-300">
                   1.{" "}
-                  <a
-                    href={`https://t.me/${botName}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-indigo-600 hover:underline"
-                  >
+                  <a href={`https://t.me/${botName}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
                     Open @{botName} on Telegram
                   </a>
                 </p>
-                <p className="text-sm text-gray-700">
-                  2. Send this message to the bot:
-                </p>
-                <code className="block bg-white border border-gray-200 rounded px-3 py-2 text-sm font-mono select-all">
+                <p className="text-sm text-gray-300">2. Send this message to the bot:</p>
+                <code className="block bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm font-mono text-gray-100 select-all">
                   /start {tgCode}
                 </code>
-                <p className="text-xs text-gray-400">Code expires in 15 minutes</p>
+                <p className="text-xs text-gray-500">Code expires in 15 minutes</p>
               </div>
             ) : (
               <button
                 onClick={generateTelegramCode}
                 disabled={tgLoading}
-                className="text-sm bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-lg disabled:opacity-50"
+                className="text-sm bg-gray-800 hover:bg-gray-700 text-gray-200 px-4 py-2 rounded-lg disabled:opacity-50 transition-colors"
               >
                 {tgLoading ? "Generating…" : "Connect Telegram"}
               </button>
@@ -257,7 +245,7 @@ export default function SettingsForm({
 
       {/* Bookmarklet */}
       <section>
-        <h2 className="font-medium text-gray-900 mb-1">Bookmarklet</h2>
+        <h2 className={sectionHeadingClass}>Bookmarklet</h2>
         <p className="text-sm text-gray-500 mb-4">
           Drag this to your bookmarks bar. Highlight any word on a page and click it to save the word instantly.
         </p>
@@ -266,18 +254,15 @@ export default function SettingsForm({
             href={bookmarkletCode}
             onClick={(e) => e.preventDefault()}
             draggable
-            className="inline-block bg-indigo-600 text-white text-sm px-4 py-2 rounded-lg cursor-grab select-none"
+            className="inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg cursor-grab select-none transition-colors"
           >
             + Working Vocab
           </a>
-          <button
-            onClick={copyBookmarklet}
-            className="text-sm text-gray-400 hover:text-gray-700"
-          >
+          <button onClick={copyBookmarklet} className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
             {bookmarkletCopied ? "Copied!" : "Copy code instead"}
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-2">
+        <p className="text-xs text-gray-600 mt-2">
           On mobile: copy the code, create a new bookmark manually, and paste it as the URL.
         </p>
       </section>
@@ -287,7 +272,7 @@ export default function SettingsForm({
         <button
           onClick={save}
           disabled={saving}
-          className="bg-indigo-600 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+          className="bg-indigo-600 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-indigo-500 disabled:opacity-50 transition-colors"
         >
           {saving ? "Saving…" : saved ? "Saved ✓" : "Save settings"}
         </button>

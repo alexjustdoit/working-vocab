@@ -25,9 +25,9 @@ const STATUS_LABELS: Record<string, string> = {
   working: "Working vocab",
 };
 const STATUS_COLORS: Record<string, string> = {
-  saved: "bg-gray-100 text-gray-500",
-  practicing: "bg-blue-50 text-blue-700",
-  working: "bg-green-50 text-green-700",
+  saved: "bg-gray-800 text-gray-400",
+  practicing: "bg-indigo-950 text-indigo-400",
+  working: "bg-emerald-950 text-emerald-400",
 };
 
 export default function WordList({ initialWords }: { initialWords: Word[] }) {
@@ -78,12 +78,12 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
           placeholder="Search words…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 flex-1 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         <select
           value={filterStatus}
           onChange={(e) => setFilterStatus(e.target.value)}
-          className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="all">All statuses</option>
           <option value="saved">Saved</option>
@@ -93,36 +93,36 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-20 text-gray-400">
+        <div className="text-center py-20 text-gray-500">
           <p className="text-base mb-2">No words yet</p>
           <p className="text-sm">
-            <Link href="/add" className="text-indigo-600 hover:underline">
+            <Link href="/add" className="text-indigo-400 hover:underline">
               Add your first word
             </Link>
           </p>
         </div>
       ) : (
-        <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
           <table className="w-full text-sm">
-            <thead className="border-b border-gray-100">
+            <thead className="border-b border-gray-800">
               <tr>
                 <th
-                  className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-700"
+                  className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300"
                   onClick={() => toggleSort("word")}
                 >
                   Word<SortIcon k="word" />
                 </th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide hidden sm:table-cell">
+                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide hidden sm:table-cell">
                   Part of speech
                 </th>
                 <th
-                  className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-700"
+                  className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300"
                   onClick={() => toggleSort("status")}
                 >
                   Status<SortIcon k="status" />
                 </th>
                 <th
-                  className="text-left px-4 py-3 text-xs font-medium text-gray-400 uppercase tracking-wide cursor-pointer hover:text-gray-700 hidden md:table-cell"
+                  className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300 hidden md:table-cell"
                   onClick={() => toggleSort("created_at")}
                 >
                   Added<SortIcon k="created_at" />
@@ -130,14 +130,14 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50">
+            <tbody className="divide-y divide-gray-800">
               {filtered.map((word) => (
-                <tr key={word.id} className="hover:bg-gray-50 group transition-colors">
+                <tr key={word.id} className="hover:bg-gray-800 group transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <Link
                         href={`/words/${word.id}`}
-                        className="font-medium text-gray-900 hover:text-indigo-600 transition-colors"
+                        className="font-medium text-gray-100 hover:text-indigo-400 transition-colors"
                       >
                         {word.word}
                       </Link>
@@ -147,17 +147,17 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
                           target="_blank"
                           rel="noopener noreferrer"
                           title={`Source: ${word.source_domain}`}
-                          className="text-gray-300 hover:text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                          className="text-gray-600 hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
                         >
                           ↗
                         </a>
                       )}
                     </div>
                     {word.phonetic && (
-                      <p className="text-xs text-gray-400 mt-0.5">{word.phonetic}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">{word.phonetic}</p>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-gray-400 text-sm hidden sm:table-cell">
+                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">
                     {word.part_of_speech}
                   </td>
                   <td className="px-4 py-3">
@@ -165,13 +165,13 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
                       {STATUS_LABELS[word.status]}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-400 text-sm hidden md:table-cell">
+                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">
                     {new Date(word.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => archive(word.id)}
-                      className="text-gray-300 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all text-xs"
+                      className="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all text-xs"
                     >
                       Archive
                     </button>
