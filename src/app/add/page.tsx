@@ -68,61 +68,61 @@ function AddWordForm() {
   return (
     <form onSubmit={handleSubmit} className="max-w-lg space-y-5">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Word</label>
+        <label className="block text-sm font-medium text-gray-300 mb-1">Word</label>
         <input
           type="text"
           value={word}
           onChange={(e) => setWord(e.target.value)}
           required
           placeholder="e.g. ephemeral"
-          className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
         {looking && <p className="text-xs text-gray-400 mt-1">Looking up definition…</p>}
         {notFound && <p className="text-xs text-amber-500 mt-1">Not found in dictionary — fill in manually.</p>}
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Definition</label>
+        <label className="block text-sm font-medium text-gray-300 mb-1">Definition</label>
         <textarea
           value={definition}
           onChange={(e) => setDefinition(e.target.value)}
           rows={3}
           placeholder="Auto-fills from dictionary lookup"
-          className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Part of speech</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Part of speech</label>
           <input
             type="text"
             value={partOfSpeech}
             onChange={(e) => setPartOfSpeech(e.target.value)}
             placeholder="noun, verb…"
-            className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Phonetic</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Phonetic</label>
           <input
             type="text"
             value={phonetic}
             onChange={(e) => setPhonetic(e.target.value)}
             placeholder="/ɪˈfem.ər.əl/"
-            className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Notes <span className="font-normal text-gray-400">(optional)</span></label>
+        <label className="block text-sm font-medium text-gray-300 mb-1">Notes <span className="font-normal text-gray-400">(optional)</span></label>
         <input
           type="text"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Any context you want to remember"
-          className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
@@ -132,12 +132,12 @@ function AddWordForm() {
         </p>
       )}
 
-      {error && <p className="text-red-600 text-sm">{error}</p>}
+      {error && <p className="text-red-400 text-sm">{error}</p>}
 
       <button
         type="submit"
         disabled={saving || !word.trim()}
-        className="bg-indigo-600 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+        className="bg-indigo-600 text-white rounded-lg px-5 py-2 text-sm font-medium hover:bg-indigo-500 disabled:opacity-50 transition-colors"
       >
         {saving ? "Saving…" : "Save word"}
       </button>
@@ -148,7 +148,7 @@ function AddWordForm() {
 export default function AddPage() {
   return (
     <AppShell>
-      <h1 className="text-lg font-semibold text-gray-900 mb-8">Add a word</h1>
+      <h1 className="text-lg font-semibold text-gray-100 mb-8">Add a word</h1>
       <Suspense>
         <AddWordForm />
       </Suspense>
