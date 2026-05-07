@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Working Vocab
 
-## Getting Started
+Build words into your working vocabulary — not just knowing what they mean, but being able to use them in conversation.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Save words while reading (manual entry or bookmarklet)
+- Source URL tracked so you can jump back to the original article
+- AI-generated dialogue examples showing natural conversational use (Gemini Flash)
+- Word status progression: Saved → Practicing → Working Vocab
+- Periodic notifications with fresh examples to reinforce words you're practicing
+- Telegram notifications (push to mobile)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js 16 + Vercel
+- Supabase (Postgres + auth)
+- Gemini Flash (free tier) — dialogue generation
+- Telegram Bot API — notifications
+- Resend — email notifications (not yet enabled, see below)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy
 
-## Learn More
+1. Create a Supabase project and run `supabase/schema.sql` in the SQL editor
+2. Get a free Gemini API key at [Google AI Studio](https://aistudio.google.com)
+3. Create a Telegram bot via [@BotFather](https://t.me/BotFather) and note the token
+4. Update the bot username in `src/components/SettingsForm.tsx` (`const botName = "..."`)
+5. Deploy to Vercel and set env vars (see `.env.local.example`)
+6. Register the Telegram webhook after deploying:
+   ```
+   POST https://api.telegram.org/bot{TOKEN}/setWebhook?url={APP_URL}/api/telegram/webhook
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+## Environment variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+See `.env.local.example` for the full list. For local dev, copy it to `.env.local` and fill in real values.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notifications
 
-## Deploy on Vercel
+**Telegram** is the supported notification channel. Users connect their Telegram account in Settings and receive word notifications as push messages.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Email notifications** are built but not recommended until a custom sending domain is configured in Resend. Without a verified domain, Resend's `onboarding@resend.dev` sender can only deliver to the account owner's email — other users won't receive emails. To enable for all users: add a domain in the Resend dashboard, verify the DNS records, then update `RESEND_FROM_EMAIL` in your env vars. The email templates and dispatch logic are already in place in `src/lib/notifications.ts`.
