@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import Nav from "@/components/Nav";
+import AppShell from "@/components/AppShell";
 import SettingsForm from "@/components/SettingsForm";
 
 export default async function SettingsPage() {
@@ -14,12 +14,9 @@ export default async function SettingsPage() {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 
   return (
-    <>
-      <Nav />
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-xl font-semibold mb-8">Settings</h1>
-        <SettingsForm initialSettings={settings} appUrl={appUrl} />
-      </main>
-    </>
+    <AppShell>
+      <h1 className="text-lg font-semibold text-gray-900 mb-8">Settings</h1>
+      <SettingsForm initialSettings={settings} appUrl={appUrl} />
+    </AppShell>
   );
 }

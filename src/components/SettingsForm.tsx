@@ -100,12 +100,12 @@ export default function SettingsForm({
         <div className="space-y-5">
 
           <div>
-            <label className="block text-sm font-medium mb-1">Notification email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Notification email</label>
             <input
               type="email"
               value={settings.notification_email ?? ""}
               onChange={(e) => set("notification_email", e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
@@ -178,16 +178,16 @@ export default function SettingsForm({
                 type="time"
                 value={settings.notif_time ?? "08:00"}
                 onChange={(e) => set("notif_time", e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
               <p className="text-xs text-gray-400 mt-1">Your local time</p>
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1">Words per message</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Words per message</label>
               <select
                 value={settings.notif_word_count ?? 3}
                 onChange={(e) => set("notif_word_count", Number(e.target.value))}
-                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               >
                 {[2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>{n}</option>

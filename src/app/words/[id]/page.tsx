@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
-import Nav from "@/components/Nav";
+import AppShell from "@/components/AppShell";
 import WordDetail from "@/components/WordDetail";
 
 export default async function WordPage({ params }: { params: Promise<{ id: string }> }) {
@@ -22,11 +22,8 @@ export default async function WordPage({ params }: { params: Promise<{ id: strin
     .order("created_at", { ascending: true });
 
   return (
-    <>
-      <Nav />
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <WordDetail word={word} initialExamples={examples ?? []} />
-      </main>
-    </>
+    <AppShell>
+      <WordDetail word={word} initialExamples={examples ?? []} />
+    </AppShell>
   );
 }
