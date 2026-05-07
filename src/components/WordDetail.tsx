@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
@@ -54,9 +54,9 @@ export default function WordDetail({
   const router = useRouter();
   const supabase = createClient();
 
-  useState(() => {
+  useEffect(() => {
     if (examples.length === 0) generateExamples();
-  });
+  }, []);
 
   async function generateExamples() {
     setGeneratingExamples(true);
