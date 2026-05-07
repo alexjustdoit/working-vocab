@@ -30,10 +30,25 @@ Build words into your working vocabulary — not just knowing what they mean, bu
    ```
    POST https://api.telegram.org/bot{TOKEN}/setWebhook?url={APP_URL}/api/telegram/webhook
    ```
+7. Set up the notification cron job (see below)
 
 ## Environment variables
 
 See `.env.local.example` for the full list. For local dev, copy it to `.env.local` and fill in real values.
+
+## Notification cron job
+
+Vercel's free plan only allows one cron job per day, which isn't enough for per-user notification scheduling. Instead, use [cron-job.org](https://cron-job.org) (free) to call the notify endpoint hourly:
+
+1. Create a free account at cron-job.org
+2. Create a new cron job:
+   - **URL:** `https://your-app.vercel.app/api/cron/notify`
+   - **Schedule:** every hour (`0 * * * *`)
+   - **Request method:** GET
+   - **Headers:** add `Authorization: Bearer YOUR_CRON_SECRET`
+3. Enable the job
+
+The endpoint checks each user's configured notification time and only sends when their scheduled hour matches — so running it hourly gives each user precise control over their notification time.
 
 ## Notifications
 
