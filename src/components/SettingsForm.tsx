@@ -110,17 +110,25 @@ export default function SettingsForm({
           <div>
             <label className={labelClass}>Channels</label>
             <div className="flex gap-4">
-              {["email", "telegram"].map((ch) => (
-                <label key={ch} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={(settings.notif_channels ?? []).includes(ch)}
-                    onChange={() => toggleChannel(ch)}
-                    className="rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500"
-                  />
-                  <span className="text-sm text-gray-300 capitalize">{ch}</span>
-                </label>
-              ))}
+              <label className="flex items-center gap-2 cursor-not-allowed opacity-40" title="Email notifications require a verified sending domain — coming soon">
+                <input
+                  type="checkbox"
+                  disabled
+                  checked={false}
+                  className="rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500"
+                />
+                <span className="text-sm text-gray-300">Email</span>
+                <span className="text-xs text-gray-500">(coming soon)</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={(settings.notif_channels ?? []).includes("telegram")}
+                  onChange={() => toggleChannel("telegram")}
+                  className="rounded border-gray-600 bg-gray-800 text-indigo-500 focus:ring-indigo-500"
+                />
+                <span className="text-sm text-gray-300">Telegram</span>
+              </label>
             </div>
           </div>
 
