@@ -15,7 +15,7 @@ export async function generateDialogueExamples(
     messages: [
       {
         role: "user",
-        content: `Give ${count} two-line dialogue exchanges using "${word}" naturally in conversation. Definitions — ${definition}${partOfSpeech ? ` (${partOfSpeech})` : ""}. Use the most commonly used modern sense. Vary the context. Separate with ---. No labels, no numbering.`,
+        content: `Give ${count} two-line dialogue exchanges using "${word}" naturally in conversation. Definitions — ${definition}${partOfSpeech ? ` (${partOfSpeech})` : ""}. If multiple senses are listed, cover each one across the exchanges. Vary the context. Separate with ---. No labels, no numbering.`,
       },
     ],
     temperature: 0.9,

@@ -32,7 +32,14 @@ export async function lookupWord(word: string): Promise<DictionaryEntry | null> 
       }
     }
 
-    return { ...base, meanings: Array.from(merged.values()) };
+    // Top-level `phonetic` is often missing; fall back to the phonetics array
+    const rawBase = data[0] as DictionaryEntry & { phonetics?: { text?: string }[] };
+    const phonetic =
+      rawBase.phonetic ??
+      rawBase.phonetics?.find((p) => p.text)?.text ??
+      "";
+
+    return { ...base, phonetic, meanings: Array.from(merged.values()) };
   } catch {
     return null;
   }
