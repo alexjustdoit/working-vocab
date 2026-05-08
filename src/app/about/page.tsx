@@ -34,7 +34,7 @@ export default function AboutPage() {
               </li>
               <li className="flex gap-3">
                 <span className="text-indigo-400 font-semibold shrink-0">4.</span>
-                <span><strong className="text-gray-100">Graduate to Working Vocab</strong> — once you've used a word naturally a few times, mark it done. It stays in your list as a record.</span>
+                <span><strong className="text-gray-100">Mark it Integrated</strong> — once you've used a word naturally a few times, mark it done. It stays in your list as a record.</span>
               </li>
             </ol>
           </section>
