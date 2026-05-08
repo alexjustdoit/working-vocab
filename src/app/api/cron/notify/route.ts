@@ -42,7 +42,6 @@ export async function GET(req: NextRequest) {
     const targetHour = Math.floor(utcHour);
 
     if (targetHour !== currentHour) continue;
-    if (currentMinute > 15) continue; // Only fire in first 15 minutes of the hour
 
     // Check frequency/day
     const freq = settings.notif_frequency ?? "daily";
