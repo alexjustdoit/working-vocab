@@ -19,6 +19,7 @@ export async function GET(req: NextRequest) {
   const nowUTC = new Date();
   const currentHour = nowUTC.getUTCHours();
   const currentMinute = nowUTC.getUTCMinutes();
+  const currentSlot = currentMinute < 30 ? 0 : 30;
   const dayNames = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
   const currentDay = dayNames[nowUTC.getUTCDay()];
 
@@ -38,10 +39,11 @@ export async function GET(req: NextRequest) {
     // Parse user's notification time in UTC
     const [userHour, userMinute] = (settings.notif_time ?? "08:00").split(":").map(Number);
     const offsetMinutes = settings.notif_time_utc_offset ?? 0;
-    const utcHour = ((userHour * 60 + userMinute - offsetMinutes) / 60 + 24) % 24;
-    const targetHour = Math.floor(utcHour);
+    const totalUTCMinutes = ((userHour * 60 + userMinute - offsetMinutes) % 1440 + 1440) % 1440;
+    const targetHour = Math.floor(totalUTCMinutes / 60);
+    const targetSlot = totalUTCMinutes % 60 < 30 ? 0 : 30;
 
-    if (targetHour !== currentHour) continue;
+    if (targetHour !== currentHour || targetSlot !== currentSlot) continue;
 
     // Check frequency/day
     const freq = settings.notif_frequency ?? "daily";

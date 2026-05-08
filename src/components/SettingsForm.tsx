@@ -24,6 +24,20 @@ const inputClass = "bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text
 const labelClass = "block text-sm font-medium text-gray-300 mb-1";
 const sectionHeadingClass = "text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4";
 
+const TIME_OPTIONS = Array.from({ length: 48 }, (_, i) => {
+  const hour = Math.floor(i / 2);
+  const minute = i % 2 === 0 ? "00" : "30";
+  const value = `${String(hour).padStart(2, "0")}:${minute}`;
+  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+  const ampm = hour < 12 ? "AM" : "PM";
+  return { value, label: `${displayHour}:${minute} ${ampm}` };
+});
+
+function snapTo30Min(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  return `${String(h).padStart(2, "0")}:${m < 30 ? "00" : "30"}`;
+}
+
 export default function SettingsForm({
   initialSettings,
   appUrl,
@@ -31,7 +45,10 @@ export default function SettingsForm({
   initialSettings: Settings;
   appUrl: string;
 }) {
-  const [settings, setSettings] = useState<Settings>(initialSettings);
+  const [settings, setSettings] = useState<Settings>({
+    ...initialSettings,
+    notif_time: snapTo30Min(initialSettings.notif_time ?? "08:00"),
+  });
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [tgCode, setTgCode] = useState<string | null>(null);
@@ -186,12 +203,15 @@ export default function SettingsForm({
           <div className="flex gap-4">
             <div>
               <label className={labelClass}>Time</label>
-              <input
-                type="time"
+              <select
                 value={settings.notif_time ?? "08:00"}
                 onChange={(e) => set("notif_time", e.target.value)}
                 className={inputClass}
-              />
+              >
+                {TIME_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
               <p className="text-xs text-gray-500 mt-1">Your local time</p>
             </div>
             <div>
