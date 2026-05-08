@@ -267,8 +267,9 @@ export default function SettingsForm({
           <a
             ref={bookmarkletRef}
             draggable
-            className="inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg cursor-grab select-none transition-colors"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg cursor-grab select-none transition-colors"
           >
+            <span className="inline-flex items-center justify-center w-5 h-5 bg-white/20 rounded text-xs font-bold leading-none">W</span>
             + Working Vocab
           </a>
           <button onClick={copyBookmarklet} className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
