@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { lookupWord, extractDefinitionSummary, buildDefinitionForAI } from "@/lib/dictionary";
 import { generateAndStoreExamples } from "@/lib/examples";
+import { reorderMeaningsByFrequency } from "@/lib/gemini";
 
 function extractDomain(url: string): string {
   try {
@@ -19,6 +20,9 @@ export async function POST(req: NextRequest) {
   const { word, definition, partOfSpeech, phonetic, notes, sourceUrl } = await req.json();
 
   const rawEntry = await lookupWord(word);
+  if (rawEntry) {
+    rawEntry.meanings = await reorderMeaningsByFrequency(word.toLowerCase().trim(), rawEntry.meanings);
+  }
   const resolved = rawEntry ? extractDefinitionSummary(rawEntry) : null;
 
   const { data, error } = await supabase
