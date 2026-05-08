@@ -34,7 +34,7 @@ const STATUS_NEXT: Record<string, string> = {
 const STATUS_LABELS: Record<string, string> = {
   saved: "Saved",
   practicing: "Practicing",
-  working: "Working vocab",
+  working: "Integrated",
 };
 
 const STATUS_COLORS: Record<string, string> = {

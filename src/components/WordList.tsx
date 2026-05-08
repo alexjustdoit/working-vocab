@@ -22,7 +22,7 @@ const STATUS_ORDER = { saved: 0, practicing: 1, working: 2 };
 const STATUS_LABELS: Record<string, string> = {
   saved: "Saved",
   practicing: "Practicing",
-  working: "Working vocab",
+  working: "Integrated",
 };
 const STATUS_COLORS: Record<string, string> = {
   saved: "bg-gray-800 text-gray-400",
@@ -85,10 +85,10 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
           onChange={(e) => setFilterStatus(e.target.value)}
           className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
-          <option value="all">All statuses</option>
+          <option value="all">All Statuses</option>
           <option value="saved">Saved</option>
           <option value="practicing">Practicing</option>
-          <option value="working">Working vocab</option>
+          <option value="working">Integrated</option>
         </select>
       </div>
 
