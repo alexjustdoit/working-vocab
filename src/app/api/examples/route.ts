@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { generateAndStoreExamples } from "@/lib/examples";
+import { buildDefinitionForAI } from "@/lib/dictionary";
+import type { DictionaryEntry } from "@/lib/dictionary";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -18,13 +20,14 @@ export async function POST(req: NextRequest) {
 
   if (!word) return NextResponse.json({ error: "Word not found" }, { status: 404 });
 
-  const definition =
-    word.definition?.meanings?.[0]?.definitions?.[0]?.definition ??
-    word.definition?.manual ??
-    "";
+  const hasMeanings = Array.isArray(word.definition?.meanings) && word.definition.meanings.length > 0;
+  const definition = hasMeanings
+    ? buildDefinitionForAI(word.definition as DictionaryEntry)
+    : (word.definition?.manual ?? "");
+  const pos = hasMeanings ? "" : (word.part_of_speech ?? "");
 
   try {
-    await generateAndStoreExamples(wordId, word.word, definition, word.part_of_speech ?? "");
+    await generateAndStoreExamples(wordId, word.word, definition, pos);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Generation failed";
     return NextResponse.json({ error: msg }, { status: 500 });

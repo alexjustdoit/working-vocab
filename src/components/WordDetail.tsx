@@ -20,6 +20,11 @@ type Word = {
 
 type Example = { id: string; text: string };
 
+type Meaning = {
+  partOfSpeech: string;
+  definitions: { definition: string }[];
+};
+
 const STATUS_NEXT: Record<string, string> = {
   saved: "practicing",
   practicing: "working",
@@ -103,11 +108,13 @@ export default function WordDetail({
     router.refresh();
   }
 
-  const definition =
-    typeof word.definition === "object" && word.definition !== null
-      ? (word.definition as { meanings?: { definitions?: { definition: string }[] }[] })
-          .meanings?.[0]?.definitions?.[0]?.definition
-      : String(word.definition ?? "");
+  const meanings: Meaning[] = (() => {
+    if (!word.definition || typeof word.definition !== "object") return [];
+    const def = word.definition as { meanings?: Meaning[]; manual?: string };
+    if (def.meanings?.length) return def.meanings;
+    if (def.manual) return [{ partOfSpeech: word.part_of_speech || "", definitions: [{ definition: def.manual }] }];
+    return [];
+  })();
 
   return (
     <div className="max-w-2xl">
@@ -138,11 +145,24 @@ export default function WordDetail({
           </div>
         </div>
 
-        {word.part_of_speech && (
-          <p className="text-indigo-400 text-sm font-medium">{word.part_of_speech}</p>
-        )}
-        {definition && (
-          <p className="text-gray-300 mt-1 leading-relaxed">{definition}</p>
+        {meanings.length > 0 && (
+          <div className="mt-2 space-y-2">
+            {meanings.map((m, i) => (
+              <div key={i}>
+                {m.partOfSpeech && (
+                  <p className="text-indigo-400 text-xs font-semibold uppercase tracking-wide">{m.partOfSpeech}</p>
+                )}
+                <div className="mt-0.5 space-y-0.5">
+                  {m.definitions.slice(0, 3).map((d, j) => (
+                    <p key={j} className="text-gray-300 text-sm leading-relaxed">
+                      {m.definitions.length > 1 ? <span className="text-gray-500 mr-1">{j + 1}.</span> : null}
+                      {d.definition}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
         {word.source_url && (
           <a

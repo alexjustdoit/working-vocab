@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { lookupWord, extractDefinitionSummary } from "@/lib/dictionary";
+import { lookupWord, extractDefinitionSummary, buildDefinitionForAI } from "@/lib/dictionary";
 import { generateAndStoreExamples } from "@/lib/examples";
 
 function extractDomain(url: string): string {
@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Generate examples synchronously so they're ready when the detail page loads
-  const def = resolved?.definition || definition || "";
-  const pos = partOfSpeech || resolved?.partOfSpeech || "";
+  const def = rawEntry ? buildDefinitionForAI(rawEntry) : (definition || "");
+  const pos = rawEntry ? "" : (partOfSpeech || resolved?.partOfSpeech || "");
   try {
     await generateAndStoreExamples(data.id, word.toLowerCase().trim(), def, pos);
   } catch {
