@@ -23,7 +23,12 @@ export async function POST(req: NextRequest) {
     word.definition?.manual ??
     "";
 
-  await generateAndStoreExamples(wordId, word.word, definition, word.part_of_speech ?? "");
+  try {
+    await generateAndStoreExamples(wordId, word.word, definition, word.part_of_speech ?? "");
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : "Generation failed";
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 
   const { data: examples } = await supabase
     .from("dialogue_examples")

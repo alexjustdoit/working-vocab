@@ -50,6 +50,7 @@ export default function WordDetail({
   const [notes, setNotes] = useState(initialWord.notes ?? "");
   const [editingNotes, setEditingNotes] = useState(false);
   const [generatingExamples, setGeneratingExamples] = useState(examples.length === 0);
+  const [examplesError, setExamplesError] = useState("");
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const router = useRouter();
   const supabase = createClient();
@@ -60,6 +61,7 @@ export default function WordDetail({
 
   async function generateExamples() {
     setGeneratingExamples(true);
+    setExamplesError("");
     try {
       const res = await fetch("/api/examples", {
         method: "POST",
@@ -67,9 +69,15 @@ export default function WordDetail({
         body: JSON.stringify({ wordId: word.id }),
       });
       const data = await res.json();
-      if (data.examples) setExamples(data.examples);
-    } catch {
-      // Silent fail — user can retry with Regenerate
+      if (!res.ok) {
+        setExamplesError(data.error ?? "Generation failed");
+      } else if (data.examples?.length) {
+        setExamples(data.examples);
+      } else {
+        setExamplesError("No examples returned — try Regenerate");
+      }
+    } catch (e) {
+      setExamplesError(e instanceof Error ? e.message : "Generation failed");
     } finally {
       setGeneratingExamples(false);
     }
@@ -167,6 +175,8 @@ export default function WordDetail({
               <div key={i} className="h-16 bg-gray-800 rounded-xl animate-pulse" />
             ))}
           </div>
+        ) : examplesError ? (
+          <p className="text-sm text-red-400">{examplesError}</p>
         ) : (
           <div className="space-y-3">
             {examples.map((ex) => (
