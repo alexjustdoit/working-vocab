@@ -9,14 +9,16 @@ function getResend() {
 interface WordForNotification {
   word: string;
   part_of_speech: string;
-  definition: string;
+  definitions: string[];
 }
 
 export function formatNotificationMessage(words: WordForNotification[], examples: string[]): string {
   const lines: string[] = ["*Your words for today:*\n"];
   words.forEach((w, i) => {
     lines.push(`*${w.word}* _(${w.part_of_speech})_`);
-    lines.push(`${w.definition}`);
+    w.definitions.forEach((def, j) => {
+      lines.push(`${j + 1}. ${def}`);
+    });
     if (examples[i]) {
       lines.push(`\n${examples[i]}`);
     }
@@ -28,13 +30,16 @@ export function formatNotificationMessage(words: WordForNotification[], examples
 export function formatEmailHtml(words: WordForNotification[], examples: string[]): string {
   const items = words
     .map((w, i) => {
+      const definitionsList = w.definitions
+        .map((d, j) => `<li style="margin:4px 0;color:#374151;font-size:15px">${d}</li>`)
+        .join("");
       const example = examples[i]
         ? `<blockquote style="border-left:3px solid #e5e7eb;margin:12px 0;padding:0 12px;color:#6b7280;font-style:italic;white-space:pre-line">${examples[i]}</blockquote>`
         : "";
       return `
       <div style="margin-bottom:28px">
         <p style="margin:0;font-size:18px;font-weight:600;color:#111">${w.word} <span style="font-size:13px;font-weight:400;color:#9ca3af">${w.part_of_speech}</span></p>
-        <p style="margin:4px 0 8px;color:#374151;font-size:15px">${w.definition}</p>
+        <ol style="margin:4px 0 8px;padding-left:20px">${definitionsList}</ol>
         ${example}
       </div>`;
     })
@@ -58,7 +63,7 @@ export async function sendWordNotifications(
   telegramChatId?: string
 ) {
   const examples = await Promise.all(
-    words.map((w) => generateSingleExample(w.word, w.definition, w.part_of_speech))
+    words.map((w) => generateSingleExample(w.word, w.definitions[0] || "", w.part_of_speech))
   );
 
   const results: { email?: boolean; telegram?: boolean } = {};

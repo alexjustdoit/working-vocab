@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { sendWordNotifications } from "@/lib/notifications";
 
-// Vercel calls this every hour. We check which users are due based on their settings.
+// cron-job.org calls this every 30 minutes. We check which users are due based on their settings.
 export const maxDuration = 60;
 
 export async function GET(req: NextRequest) {
@@ -67,14 +67,32 @@ export async function GET(req: NextRequest) {
 
     if (!words?.length) continue;
 
-    const wordPayloads = words.map((w) => ({
-      word: w.word,
-      part_of_speech: w.part_of_speech ?? "",
-      definition:
-        w.definition?.meanings?.[0]?.definitions?.[0]?.definition ??
-        w.definition?.manual ??
-        "",
-    }));
+    const wordPayloads = words.map((w) => {
+      const definitions: string[] = [];
+
+      if (w.definition?.meanings?.[0]) {
+        // Extract up to 3 definitions from the first meaning (matches app's display)
+        const firstMeaning = w.definition.meanings[0];
+        if (Array.isArray(firstMeaning.definitions)) {
+          definitions.push(
+            ...firstMeaning.definitions
+              .slice(0, 3)
+              .map((d: { definition: string }) => d.definition)
+          );
+        }
+      }
+
+      // Fallback to manual definition if no meanings found
+      if (definitions.length === 0 && w.definition?.manual) {
+        definitions.push(w.definition.manual);
+      }
+
+      return {
+        word: w.word,
+        part_of_speech: w.part_of_speech ?? "",
+        definitions: definitions.length > 0 ? definitions : [""],
+      };
+    });
 
     await sendWordNotifications(
       wordPayloads,
