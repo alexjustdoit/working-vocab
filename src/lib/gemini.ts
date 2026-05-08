@@ -1,6 +1,8 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+function getGroq() {
+  return new Groq({ apiKey: process.env.GROQ_API_KEY });
+}
 
 export async function generateDialogueExamples(
   word: string,
@@ -8,12 +10,19 @@ export async function generateDialogueExamples(
   partOfSpeech: string,
   count = 3
 ): Promise<string[]> {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const completion = await getGroq().chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages: [
+      {
+        role: "user",
+        content: `Give ${count} two-line dialogue exchanges using "${word}" (${partOfSpeech}: ${definition}) naturally in conversation. Vary the context. Separate with ---. No labels, no numbering.`,
+      },
+    ],
+    temperature: 0.9,
+    max_tokens: 400,
+  });
 
-  const prompt = `Give ${count} two-line dialogue exchanges using "${word}" (${partOfSpeech}: ${definition}) naturally in conversation. Vary the context. Separate with ---. No labels, no numbering.`;
-
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const text = completion.choices[0]?.message?.content ?? "";
   return text
     .split("---")
     .map((s) => s.trim())
