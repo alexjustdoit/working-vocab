@@ -94,12 +94,28 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
 
       {filtered.length === 0 ? (
         <div className="text-center py-20 text-gray-500">
-          <p className="text-base mb-2">No words yet</p>
-          <p className="text-sm">
-            <Link href="/add" className="text-indigo-400 hover:underline">
-              Add your first word
-            </Link>
-          </p>
+          {search ? (
+            <>
+              <p className="text-base mb-2">No results for &ldquo;{search}&rdquo;</p>
+              <p className="text-sm">
+                <Link
+                  href={`/add?word=${encodeURIComponent(search)}`}
+                  className="text-indigo-400 hover:underline"
+                >
+                  Add &ldquo;{search}&rdquo; as a new word →
+                </Link>
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="text-base mb-2">No words yet</p>
+              <p className="text-sm">
+                <Link href="/add" className="text-indigo-400 hover:underline">
+                  Add your first word
+                </Link>
+              </p>
+            </>
+          )}
         </div>
       ) : (
         <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
