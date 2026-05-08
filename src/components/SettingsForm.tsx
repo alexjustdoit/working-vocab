@@ -269,7 +269,9 @@ export default function SettingsForm({
             draggable
             className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm px-4 py-2 rounded-lg cursor-grab select-none transition-colors"
           >
-            <span className="inline-flex items-center justify-center w-5 h-5 bg-white/20 rounded text-xs font-bold leading-none">W</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+            </svg>
             + Working Vocab
           </a>
           <button onClick={copyBookmarklet} className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
