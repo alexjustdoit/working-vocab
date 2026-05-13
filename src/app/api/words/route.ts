@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
 
   const rawEntry = await lookupWord(word);
   if (rawEntry) {
+    console.log(`[addWord] "${word}" before reorder:`, rawEntry.meanings[0]?.definitions.slice(0, 3).map((d: any) => d.definition));
+
     rawEntry.meanings = await reorderMeaningsByFrequency(word.toLowerCase().trim(), rawEntry.meanings);
     // Also reorder definitions within each meaning by frequency
     for (const meaning of rawEntry.meanings) {
@@ -30,6 +32,8 @@ export async function POST(req: NextRequest) {
         meaning.definitions
       );
     }
+
+    console.log(`[addWord] "${word}" after reorder:`, rawEntry.meanings[0]?.definitions.slice(0, 3).map((d: any) => d.definition));
   }
   const resolved = rawEntry ? extractDefinitionSummary(rawEntry) : null;
 
