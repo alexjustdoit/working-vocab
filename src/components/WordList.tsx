@@ -118,85 +118,141 @@ export default function WordList({ initialWords }: { initialWords: Word[] }) {
           )}
         </div>
       ) : (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="border-b border-gray-800">
-              <tr>
-                <th
-                  className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300"
-                  onClick={() => toggleSort("word")}
-                >
-                  Word<SortIcon k="word" />
-                </th>
-                <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide hidden sm:table-cell">
-                  Part of speech
-                </th>
-                <th
-                  className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300"
-                  onClick={() => toggleSort("status")}
-                >
-                  Status<SortIcon k="status" />
-                </th>
-                <th
-                  className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300 hidden md:table-cell"
-                  onClick={() => toggleSort("created_at")}
-                >
-                  Added<SortIcon k="created_at" />
-                </th>
-                <th className="px-4 py-3" />
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-800">
-              {filtered.map((word) => (
-                <tr key={word.id} className="hover:bg-gray-800 group transition-colors">
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <Link
-                        href={`/words/${word.id}`}
-                        className="font-medium text-gray-100 hover:text-indigo-400 transition-colors"
-                      >
-                        {word.word}
-                      </Link>
-                      {word.source_url && (
-                        <a
-                          href={word.source_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title={`Source: ${word.source_domain}`}
-                          className="text-gray-600 hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+        <>
+          {/* Desktop table view */}
+          <div className="hidden sm:block bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+            <table className="w-full text-sm">
+              <thead className="border-b border-gray-800">
+                <tr>
+                  <th
+                    className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300"
+                    onClick={() => toggleSort("word")}
+                  >
+                    Word<SortIcon k="word" />
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide hidden sm:table-cell">
+                    Part of speech
+                  </th>
+                  <th
+                    className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300"
+                    onClick={() => toggleSort("status")}
+                  >
+                    Status<SortIcon k="status" />
+                  </th>
+                  <th
+                    className="text-left px-4 py-3 text-xs font-medium text-gray-500 uppercase tracking-wide cursor-pointer hover:text-gray-300 hidden md:table-cell"
+                    onClick={() => toggleSort("created_at")}
+                  >
+                    Added<SortIcon k="created_at" />
+                  </th>
+                  <th className="px-4 py-3" />
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-800">
+                {filtered.map((word) => (
+                  <tr key={word.id} className="hover:bg-gray-800 group transition-colors">
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Link
+                          href={`/words/${word.id}`}
+                          className="font-medium text-gray-100 hover:text-indigo-400 transition-colors"
                         >
-                          ↗
-                        </a>
+                          {word.word}
+                        </Link>
+                        {word.source_url && (
+                          <a
+                            href={word.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title={`Source: ${word.source_domain}`}
+                            className="text-gray-600 hover:text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ↗
+                          </a>
+                        )}
+                      </div>
+                      {word.phonetic && (
+                        <p className="text-xs text-gray-500 mt-0.5">{word.phonetic}</p>
                       )}
-                    </div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">
+                      {word.part_of_speech}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[word.status]}`}>
+                        {STATUS_LABELS[word.status]}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-gray-500 hidden md:table-cell">
+                      {new Date(word.created_at).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => archive(word.id)}
+                        className="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all text-xs"
+                      >
+                        Archive
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile card view */}
+          <div className="sm:hidden space-y-3">
+            {filtered.map((word) => (
+              <Link
+                key={word.id}
+                href={`/words/${word.id}`}
+                className="block bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-indigo-600 transition-colors active:bg-gray-800"
+              >
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-100 text-base truncate">
+                      {word.word}
+                    </h3>
                     {word.phonetic && (
                       <p className="text-xs text-gray-500 mt-0.5">{word.phonetic}</p>
                     )}
-                  </td>
-                  <td className="px-4 py-3 text-gray-500 hidden sm:table-cell">
-                    {word.part_of_speech}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[word.status]}`}>
+                  </div>
+                  {word.source_url && (
+                    <a
+                      href={word.source_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-gray-600 hover:text-gray-400 shrink-0"
+                    >
+                      ↗
+                    </a>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">
+                      {word.part_of_speech}
+                    </span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[word.status]}`}>
                       {STATUS_LABELS[word.status]}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-500 hidden md:table-cell">
-                    {new Date(word.created_at).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => archive(word.id)}
-                      className="text-gray-600 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all text-xs"
-                    >
-                      Archive
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      archive(word.id);
+                    }}
+                    className="text-gray-600 hover:text-red-400 text-xs"
+                  >
+                    Archive
+                  </button>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
