@@ -64,6 +64,42 @@ export async function reorderMeaningsByFrequency<
   return meanings;
 }
 
+export async function reorderDefinitionsByFrequency(
+  word: string,
+  partOfSpeech: string,
+  definitions: { definition: string }[]
+): Promise<{ definition: string }[]> {
+  if (definitions.length <= 1) return definitions;
+  try {
+    const list = definitions
+      .map((d, i) => `${i}: ${d.definition}`)
+      .join("\n");
+    const completion = await getGroq().chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        {
+          role: "user",
+          content: `The word "${word}" (${partOfSpeech}) has these definitions:\n${list}\n\nReturn ONLY a comma-separated list of the indices reordered from most to least commonly used in modern English. Example: 2,0,1`,
+        },
+      ],
+      temperature: 0,
+      max_tokens: 20,
+    });
+    const text = completion.choices[0]?.message?.content?.trim() ?? "";
+    const indices = text.split(",").map((s) => parseInt(s.trim(), 10));
+    if (
+      indices.length === definitions.length &&
+      indices.every((i) => !isNaN(i) && i >= 0 && i < definitions.length) &&
+      new Set(indices).size === definitions.length
+    ) {
+      return indices.map((i) => definitions[i]);
+    }
+  } catch {
+    // fall through to original order
+  }
+  return definitions;
+}
+
 export async function generateSingleExample(
   word: string,
   definition: string,

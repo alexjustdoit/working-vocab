@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { lookupWord, extractDefinitionSummary, buildDefinitionForAI } from "@/lib/dictionary";
 import { generateAndStoreExamples } from "@/lib/examples";
-import { reorderMeaningsByFrequency } from "@/lib/gemini";
+import { reorderMeaningsByFrequency, reorderDefinitionsByFrequency } from "@/lib/gemini";
 
 function extractDomain(url: string): string {
   try {
@@ -22,6 +22,14 @@ export async function POST(req: NextRequest) {
   const rawEntry = await lookupWord(word);
   if (rawEntry) {
     rawEntry.meanings = await reorderMeaningsByFrequency(word.toLowerCase().trim(), rawEntry.meanings);
+    // Also reorder definitions within each meaning by frequency
+    for (const meaning of rawEntry.meanings) {
+      meaning.definitions = await reorderDefinitionsByFrequency(
+        word.toLowerCase().trim(),
+        meaning.partOfSpeech,
+        meaning.definitions
+      );
+    }
   }
   const resolved = rawEntry ? extractDefinitionSummary(rawEntry) : null;
 
