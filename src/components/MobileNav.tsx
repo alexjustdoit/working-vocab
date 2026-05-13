@@ -39,13 +39,6 @@ export default function MobileNav() {
           <span className="text-xs font-medium">{item.label}</span>
         </Link>
       ))}
-      <button
-        onClick={signOut}
-        className="flex flex-col items-center justify-center flex-1 py-2 rounded-lg text-gray-500 hover:text-gray-300 transition-colors"
-      >
-        <span className="text-xl mb-0.5">🚪</span>
-        <span className="text-xs font-medium">Out</span>
-      </button>
     </nav>
   );
 }

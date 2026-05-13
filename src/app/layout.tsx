@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Build your working vocabulary",
   manifest: "/manifest.json",
   themeColor: "#4f46e5",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
