@@ -92,10 +92,13 @@ export async function reorderDefinitionsByFrequency(
       indices.every((i) => !isNaN(i) && i >= 0 && i < definitions.length) &&
       new Set(indices).size === definitions.length
     ) {
+      console.log(`[reorderDefinitions] "${word}" reordered: ${text}`);
       return indices.map((i) => definitions[i]);
+    } else {
+      console.log(`[reorderDefinitions] "${word}" invalid response: "${text}" (expected ${definitions.length} indices)`);
     }
-  } catch {
-    // fall through to original order
+  } catch (error) {
+    console.error(`[reorderDefinitions] Error for "${word}":`, error);
   }
   return definitions;
 }
