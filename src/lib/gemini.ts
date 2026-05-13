@@ -79,11 +79,11 @@ export async function reorderDefinitionsByFrequency(
       messages: [
         {
           role: "user",
-          content: `Rank these definitions for "${word}" (${partOfSpeech}) by how commonly they're used in modern English today. Most common first.\n\n${list}\n\nReturn ONLY the indices as a comma-separated list. Example: 2,0,1\nDo not include any other text.`,
+          content: `Rank these ${definitions.length} definitions for "${word}" (${partOfSpeech}) by how commonly they're used in modern English today. Most common first. You MUST return all ${definitions.length} indices.\n\n${list}\n\nReturn ONLY a comma-separated list of ALL indices 0-${definitions.length - 1} in your ranked order. No other text.`,
         },
       ],
       temperature: 0,
-      max_tokens: 20,
+      max_tokens: 30,
     });
     const text = completion.choices[0]?.message?.content?.trim() ?? "";
     const indices = text.split(",").map((s) => parseInt(s.trim(), 10));
