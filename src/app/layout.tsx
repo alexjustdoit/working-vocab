@@ -12,6 +12,14 @@ const geist = Geist({
 export const metadata: Metadata = {
   title: "Working Vocab",
   description: "Build your working vocabulary",
+  manifest: "/manifest.json",
+  themeColor: "#4f46e5",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=5",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Working Vocab",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

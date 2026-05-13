@@ -1,0 +1,12 @@
+{
+  "name": "Working Vocab",
+  "short_name": "Vocab",
+  "description": "Build your working vocabulary with smart definitions and dialogue examples",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "icons": []
+}
