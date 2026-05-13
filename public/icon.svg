@@ -1,0 +1,26 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#0f172a"/>
+
+  <!-- Icon: Stylized book with word emphasis -->
+  <!-- Left page -->
+  <path d="M 120 100 L 120 412 Q 120 440 148 440 L 256 440 L 256 100 Z" fill="#1e293b" stroke="#4f46e5" stroke-width="8"/>
+
+  <!-- Right page -->
+  <path d="M 256 100 L 256 440 L 364 440 Q 392 440 392 412 L 392 100 Z" fill="#1e1f3a" stroke="#4f46e5" stroke-width="8"/>
+
+  <!-- Text lines on left page -->
+  <line x1="145" y1="160" x2="225" y2="160" stroke="#6366f1" stroke-width="6" stroke-linecap="round"/>
+  <line x1="145" y1="210" x2="225" y2="210" stroke="#a5b4fc" stroke-width="4" stroke-linecap="round"/>
+  <line x1="145" y1="245" x2="215" y2="245" stroke="#a5b4fc" stroke-width="4" stroke-linecap="round"/>
+  <line x1="145" y1="280" x2="225" y2="280" stroke="#a5b4fc" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Text lines on right page -->
+  <line x1="281" y1="160" x2="361" y2="160" stroke="#6366f1" stroke-width="6" stroke-linecap="round"/>
+  <line x1="281" y1="210" x2="361" y2="210" stroke="#a5b4fc" stroke-width="4" stroke-linecap="round"/>
+  <line x1="281" y1="245" x2="351" y2="245" stroke="#a5b4fc" stroke-width="4" stroke-linecap="round"/>
+  <line x1="281" y1="280" x2="361" y2="280" stroke="#a5b4fc" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- Spine -->
+  <line x1="256" y1="100" x2="256" y2="440" stroke="#4f46e5" stroke-width="6"/>
+</svg>
