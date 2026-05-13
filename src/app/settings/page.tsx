@@ -15,7 +15,7 @@ export default async function SettingsPage() {
 
   return (
     <AppShell>
-      <h1 className="text-lg font-semibold text-gray-900 mb-8">Settings</h1>
+      <h1 className="text-lg font-semibold text-gray-100 mb-8">Settings</h1>
       <SettingsForm initialSettings={settings} appUrl={appUrl} />
     </AppShell>
   );
