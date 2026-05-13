@@ -79,7 +79,7 @@ export async function reorderDefinitionsByFrequency(
       messages: [
         {
           role: "user",
-          content: `The word "${word}" (${partOfSpeech}) has these definitions:\n${list}\n\nReturn ONLY a comma-separated list of the indices reordered from most to least commonly used in modern English. Example: 2,0,1`,
+          content: `Rank these definitions for "${word}" (${partOfSpeech}) by how commonly they're used in modern English today. Most common first.\n\n${list}\n\nReturn ONLY the indices as a comma-separated list. Example: 2,0,1\nDo not include any other text.`,
         },
       ],
       temperature: 0,
