@@ -49,12 +49,17 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Cache successful responses (clone before returning)
-        if (response.ok) {
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, response.clone());
-          });
+        // Must clone immediately before response is consumed
+        if (!response || !response.ok) {
+          return response;
         }
+
+        // Clone once and use both for cache and return
+        const responseClone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => {
+          cache.put(event.request, responseClone);
+        });
+
         return response;
       })
       .catch(() => {
