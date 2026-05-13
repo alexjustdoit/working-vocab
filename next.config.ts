@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 import withPWA from "next-pwa";
 
-const nextConfig: NextConfig = {};
+const nextConfig: NextConfig = {
+  // Use webpack instead of Turbopack (next-pwa compatibility)
+  experimental: {
+    turbopack: false,
+  },
+};
 
 export default withPWA({
   ...nextConfig,
