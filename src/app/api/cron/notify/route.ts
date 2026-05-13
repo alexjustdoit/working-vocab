@@ -70,16 +70,15 @@ export async function GET(req: NextRequest) {
     const wordPayloads = words.map((w) => {
       const definitions: string[] = [];
 
-      if (w.definition?.meanings?.[0]) {
-        // Extract up to 3 definitions from the first meaning (matches app's display)
-        const firstMeaning = w.definition.meanings[0];
-        if (Array.isArray(firstMeaning.definitions)) {
-          definitions.push(
-            ...firstMeaning.definitions
-              .slice(0, 3)
-              .map((d: { definition: string }) => d.definition)
-          );
-        }
+      if (w.definition?.meanings?.length) {
+        // Extract 1 definition from each meaning (shows all senses like the app)
+        definitions.push(
+          ...w.definition.meanings
+            .map((m: { definitions?: { definition: string }[] }) =>
+              m.definitions?.[0]?.definition ?? ""
+            )
+            .filter(Boolean)
+        );
       }
 
       // Fallback to manual definition if no meanings found
