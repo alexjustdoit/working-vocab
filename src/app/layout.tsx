@@ -25,7 +25,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full bg-gray-950 text-gray-100">{children}</body>
+      <body className="min-h-full bg-gray-950 text-gray-100">
+        {children}
+        <script suppressHydrationWarning>{`
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(() => {});
+          }
+        `}</script>
+      </body>
     </html>
   );
 }

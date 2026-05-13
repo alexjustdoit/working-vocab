@@ -1,18 +1,5 @@
 import type { NextConfig } from "next";
-import withPWA from "next-pwa";
 
-const nextConfig: NextConfig = {
-  // Use webpack instead of Turbopack (next-pwa compatibility)
-  experimental: {
-    turbopack: false,
-  },
-};
+const nextConfig: NextConfig = {};
 
-export default withPWA({
-  ...nextConfig,
-  pwa: {
-    dest: "public",
-    register: true,
-    skipWaiting: true,
-  },
-});
+export default nextConfig;
